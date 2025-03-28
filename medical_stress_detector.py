@@ -254,7 +254,7 @@ def clear_form():
 
 # Create the main application window
 root = tk.Tk()
-root.title("Medical Stress Level Detector")
+root.title("Stress Detector")
 
 # Center the window on the screen
 window_width = 285
