@@ -17,6 +17,14 @@ import random
 import csv
 from datetime import datetime
 from pathlib import Path
+import pickle
+import numpy as np
+
+# Load the pre-trained model from a file
+with open('stress_detection_model.pkl', 'rb') as model_file:
+    stress_model = pickle.load(model_file)
+with open('stress_scaler_model.pkl', 'rb') as scaler_file:
+    input_scaler = pickle.load(scaler_file)
 
 # Mapping from numeric prediction (0-4) to human-readable labels.
 stress_label_map = {
@@ -118,17 +126,19 @@ def close_warning(popup):
     """
     popup.destroy()
 
-def simulate_model_prediction(input_features):
+def model_prediction(input_features):
     """
-    Simulates a model prediction for stress levels based on input features.
-    This is a placeholder function that randomly generates a prediction.
-    Will be replaced with actual model inference logic when completed.
+    Predicts the stress level using the loaded model based on input features.
 
-    :param input_features: List of input features for the model.
+    :param input_features: List of input features for the model
 
-    :return: A random integer representing the predicted stress level (0-4).
+    :return: Numeric prediction (0-4)
     """
-    return random.randint(0,4)
+    input_array = np.array(input_features).reshape(1, -1)
+    scaled_input = input_scaler.transform(input_array)
+    prediction = stress_model.predict(scaled_input)
+    return int(prediction[0])
+
 
 def log_result(input_values, result_label):
     """
@@ -200,7 +210,7 @@ def submit_data():
             raise ValueError(error_msg)
 
         # Call the model prediction function
-        prediction_numeric = simulate_model_prediction(validated_inputs)
+        prediction_numeric = model_prediction(validated_inputs)
         prediction_text = stress_label_map.get(prediction_numeric, "Unknown")
 
         # Display the prediction result to the user
@@ -257,7 +267,7 @@ root = tk.Tk()
 root.title("Stress Detector")
 
 # Center the window on the screen
-window_width = 285
+window_width = 290
 window_height = 350
 
 screen_width = root.winfo_screenwidth()

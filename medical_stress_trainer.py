@@ -31,11 +31,13 @@ param_grid = [
     {'penalty': ['l2'], 'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]},
 ]
 
-lr = LogisticRegression(random_state = 101)
+lr = LogisticRegression(random_state = 101, max_iter=5000)
 cv = RepeatedKFold(n_splits = 10, n_repeats = 10, random_state = 101)
-grid_cv = GridSearchCV(lr, param_grid, cv = cv, n_jobs = 5)
+grid_cv = GridSearchCV(lr, param_grid, cv = cv, n_jobs = -1)
 grid_cv.fit(X_train, y_train)
 y_predict = grid_cv.best_estimator_.predict(X_test)
+
+print("Accuracy: ", grid_cv.best_estimator_.score(X_test, y_test))
 
 explainer = shap.Explainer(grid_cv.best_estimator_.predict, X100)
 shap_values = explainer(X100)
@@ -59,4 +61,7 @@ shap.partial_dependence_plot(
 
 with open('stress_detection_model.pkl','wb') as f:
     # noinspection PyTypeChecker
-    pickle.dump(grid_cv ,f)
+    pickle.dump(grid_cv, f)
+
+with open('stress_scaler_model.pkl', 'wb') as f:
+    pickle.dump(scaler, f)
