@@ -34,7 +34,7 @@ stress_label_map = {
     4: "Extreme"
 }
 
-#Expected requirements for each field
+# Expected requirements for each field
 field_requirements = {
     "Snoring Range": "Expected range: 0-100",
     "Respiration Rate": "Expected range: 0-120",
@@ -45,6 +45,9 @@ field_requirements = {
     "Hours of Sleep": "Expected range: 0-24",
     "Heart Rate": "Expected range: 0-250"
 }
+
+# Keep track of open popups
+open_popups = []
 
 def validate_input(field_name, value_str, min_val=None, max_val=None, allow_null=False, soft_min=None, soft_max=None):
     """
@@ -95,6 +98,7 @@ def show_warning_popup(title, message):
     :param message: The message to display in the popup window
     """
     popup = tk.Toplevel(root)
+    open_popups.append(popup)
     popup.title(title)
 
     # Wait for the root window to be drawn before calculating position
@@ -123,7 +127,42 @@ def close_warning(popup):
 
     :param popup: The popup window to be closed
     """
+    if popup in open_popups:
+        open_popups.remove(popup)
     popup.destroy()
+
+def show_error_popup(title, message):
+    """
+    Displays an error popup with a specified title and message.
+    It currently creates a simple popup window with the provided title and message.
+
+    :param title: The title of the popup window
+    :param message: The message to display in the popup window
+    """
+    popup = tk.Toplevel(root)
+    open_popups.append(popup)
+    popup.title(title)
+
+    # Wait for the root window to be drawn before calculating position
+    popup.update_idletasks()
+
+    base_x = root.winfo_x()
+    base_y = root.winfo_y()
+
+    popup.geometry(f"350x250+{base_x - 375}+{base_y + 50}")
+    label = ttk.Label(popup, text=message, wraplength=360)
+    label.pack(pady=10, padx=10)
+
+    button = ttk.Button(popup, text="OK", command=popup.destroy)
+    button.pack(pady=(0,10))
+
+def close_all_popups():
+    """
+    Closes all open popups.
+    """
+    for popup in open_popups:
+        popup.destroy()
+    open_popups.clear()
 
 def model_prediction(input_features):
     """
@@ -165,6 +204,8 @@ def submit_data():
     Collects user input from the GUI, arranges it, and sends it to the
     model for prediction. The result is then displayed to the user.
     """
+    close_all_popups()
+
     try:
         invalid_fields = []
         validated_inputs = []
@@ -222,31 +263,6 @@ def submit_data():
         show_error_popup("Input Error", f"Please enter a valid value for all fields.\n\n{str(e)}")
     except Exception as e:
         messagebox.showerror("Error", f"An unexpected error occurred: {str(e)}")
-
-def show_error_popup(title, message):
-    """
-    Displays an error popup with a specified title and message.
-    This function is a placeholder for future error handling and logging.
-    It currently creates a simple popup window with the provided title and message.
-
-    :param title: The title of the popup window
-    :param message: The message to display in the popup window
-    """
-    popup = tk.Toplevel(root)
-    popup.title(title)
-
-    # Wait for the root window to be drawn before calculating position
-    popup.update_idletasks()
-
-    base_x = root.winfo_x()
-    base_y = root.winfo_y()
-
-    popup.geometry(f"350x250+{base_x - 375}+{base_y + 50}")
-    label = ttk.Label(popup, text=message, wraplength=360)
-    label.pack(pady=10, padx=10)
-
-    button = ttk.Button(popup, text="OK", command=popup.destroy)
-    button.pack(pady=(0,10))
 
 def clear_form():
     """
