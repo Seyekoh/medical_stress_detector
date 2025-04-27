@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, GridSearchCV, RepeatedKFold
+from sklearn.metrics import f1_score, roc_auc_score
 import pickle
 
 from sklearn.preprocessing import StandardScaler
@@ -36,8 +37,11 @@ cv = RepeatedKFold(n_splits = 10, n_repeats = 10, random_state = 101)
 grid_cv = GridSearchCV(lr, param_grid, cv = cv, n_jobs = -1)
 grid_cv.fit(X_train, y_train)
 y_predict = grid_cv.best_estimator_.predict(X_test)
+y_proba = grid_cv.best_estimator_.predict_proba(X_test)
 
 print("Accuracy: ", grid_cv.best_estimator_.score(X_test, y_test))
+print("F1 Score: ", f1_score(y_test, y_predict, average='weighted'))
+print("ROC AUC Score: ", roc_auc_score(y_test, y_proba, multi_class='ovr'))
 
 explainer = shap.Explainer(grid_cv.best_estimator_.predict, X100)
 shap_values = explainer(X100)
@@ -64,4 +68,5 @@ with open('stress_detection_model.pkl','wb') as f:
     pickle.dump(grid_cv, f)
 
 with open('stress_scaler_model.pkl', 'wb') as f:
+    # noinspection PyTypeChecker
     pickle.dump(scaler, f)
