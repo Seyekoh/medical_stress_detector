@@ -173,8 +173,7 @@ def model_prediction(input_features):
     :return: Numeric prediction (0-4)
     """
     input_array = np.array(input_features).reshape(1, -1)
-    scaled_input = input_scaler.transform(input_array)
-    prediction = stress_model.predict(scaled_input)
+    prediction = stress_model.predict(input_array)
     return int(prediction[0])
 
 
