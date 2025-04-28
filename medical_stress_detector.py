@@ -21,9 +21,7 @@ import numpy as np
 
 # Load the pre-trained model from a file
 with open('stress_detection_model.pkl', 'rb') as model_file:
-    stress_model = pickle.load(model_file)
-with open('stress_scaler_model.pkl', 'rb') as scaler_file:
-    input_scaler = pickle.load(scaler_file)
+    stress_model, scaler = pickle.load(model_file)
 
 # Mapping from numeric prediction (0-4) to human-readable labels.
 stress_label_map = {
@@ -173,7 +171,8 @@ def model_prediction(input_features):
     :return: Numeric prediction (0-4)
     """
     input_array = np.array(input_features).reshape(1, -1)
-    prediction = stress_model.predict(input_array)
+    scaled_input_data = scaler.transform(input_array)
+    prediction = stress_model.predict(scaled_input_data)
     return int(prediction[0])
 
 

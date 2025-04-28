@@ -28,11 +28,11 @@ X100 = shap.utils.sample(X_train, 100)
 print(X100.columns.tolist())
 
 param_grid = [
-    {'penalty': ['l1'], 'solver': ['liblinear', 'saga'], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]},
-    {'penalty': ['l2'], 'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]},
+    {'penalty': ['l1'], 'solver': ['saga'], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]},
+    {'penalty': ['l2'], 'solver': ['newton-cg', 'lbfgs', 'sag', 'saga'], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]},
 ]
 
-lr = LogisticRegression(random_state = 101, max_iter=5000)
+lr = LogisticRegression(random_state = 101, max_iter=1000)
 cv = RepeatedKFold(n_splits = 10, n_repeats = 10, random_state = 101)
 grid_cv = GridSearchCV(lr, param_grid, cv = cv, n_jobs = -1)
 grid_cv.fit(X_train, y_train)
@@ -65,8 +65,4 @@ shap.partial_dependence_plot(
 
 with open('stress_detection_model.pkl','wb') as f:
     # noinspection PyTypeChecker
-    pickle.dump(grid_cv, f)
-
-with open('stress_scaler_model.pkl', 'wb') as f:
-    # noinspection PyTypeChecker
-    pickle.dump(scaler, f)
+    pickle.dump((grid_cv.best_estimator_, scaler), f)

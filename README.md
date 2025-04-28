@@ -6,6 +6,6 @@
 
 ![Values Chart](assets/valuesSHAP.png)
 
-![Scores](assets/scores.png)
+![Scores](assets/scores.jpg)
 
 
