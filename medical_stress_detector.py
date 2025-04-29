@@ -62,10 +62,7 @@ def validate_input(field_name, value_str, min_val=None, max_val=None, allow_null
     :raises: ValueError if input is invalid
     """
     if not value_str:
-        if allow_null:
-            return None
-        else:
-            raise ValueError(f"{field_name} cannot be empty.")
+        raise ValueError(f"{field_name} cannot be empty.")
 
     try:
         value = float(value_str)
@@ -218,17 +215,17 @@ def submit_data():
                 elif field_name == "Respiration Rate":
                     value = validate_input(field_name, var.get(), min_val=0, max_val=120, soft_min=10, soft_max=60)
                 elif field_name == "Body Temperature (°F)":
-                    value = validate_input(field_name, var.get(), min_val=50, max_val=115, allow_null=True, soft_min=95, soft_max=106)
+                    value = validate_input(field_name, var.get(), min_val=50, max_val=115, soft_min=95, soft_max=106)
                 elif field_name == "Limb Movement":
-                    value = validate_input(field_name, var.get(), min_val=0, max_val=100, allow_null=True, soft_max=30)
+                    value = validate_input(field_name, var.get(), min_val=0, max_val=100, soft_max=30)
                 elif field_name == "Blood Oxygen":
-                    value = validate_input(field_name, var.get(), min_val=30, max_val=100, allow_null=True, soft_min=90)
+                    value = validate_input(field_name, var.get(), min_val=30, max_val=100, soft_min=90)
                 elif field_name == "Eye Movement":
-                    value = validate_input(field_name, var.get(), min_val=0, max_val=200, allow_null=True, soft_min=5, soft_max=120)
+                    value = validate_input(field_name, var.get(), min_val=0, max_val=200, soft_min=5, soft_max=120)
                 elif field_name == "Hours of Sleep":
-                    value = validate_input(field_name, var.get(), min_val=0, max_val=24, allow_null=True, soft_min=4, soft_max=12)
+                    value = validate_input(field_name, var.get(), min_val=0, max_val=24, soft_min=4, soft_max=12)
                 elif field_name == "Heart Rate":
-                    value = validate_input(field_name, var.get(), min_val=0, max_val=250, allow_null=True, soft_min=40, soft_max=180)
+                    value = validate_input(field_name, var.get(), min_val=0, max_val=250, soft_min=40, soft_max=180)
                 else:
                     raise ValueError(f"Unexpected field: {field_name}")
 
