@@ -6,6 +6,9 @@ This module contains the main function to run the medical stress detector applic
 It initializes the application, loads the model, and starts the GUI for user interaction.
 It also includes a function to handle the prediction of stress levels based on user input.
 It is designed to be run as a standalone script.
+The application collects various physiological parameters from the user, validates the input,
+and uses a pre-trained machine learning model to predict the user's stress level.
+The results are displayed in the GUI and logged to a CSV file for future reference.
 """
 
 __author__ = "James Bridges"
